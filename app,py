@@ -9,9 +9,9 @@ app.static_folder = 'static'
 def main():
    return render_template('index.html')
 
-# @app.route('/result', methods = ['POST', 'GET'])
-# def result(): 
-#     return render_template('result.html')
+@app.route('/submit', methods = ['POST', 'GET'])
+def result(): 
+    return render_template('result.html')
 
 if __name__ == '__main__':
    app.run(debug = True)
