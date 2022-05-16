@@ -107,7 +107,7 @@ def result():
    # res = response['block']
    # f.write(res)
    # f.close()
-   return render_template('result.html', res = response)
+   return render_template('result.html')
 
 if __name__ == '__main__':
    app.run(debug = True)
