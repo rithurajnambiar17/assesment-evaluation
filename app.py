@@ -60,23 +60,56 @@ def result():
 
    upload_file(f_path, bucket='assesmentevaluation')
 
-   client = boto3.client('textract')
+   #OCR detection on the document
+   client = boto3.client('textract', 'ap-south-1')
    response = client.detect_document_text(
       Document={
          'Bytes': b'bytes',
          'S3Object': {
                'Bucket': 'assesmentevaluation',
-               'Name': f_name,
-               'Region' : 'ap-south-1'
+               'Name': f_name
          }
       }
    )
-   # bucket = 'assesmentevaluation'
-   # document = f_name
-   # region = 'ap-south-1'
-   response
 
-   return render_template('result.html', res = response)
+   #Sending the text to plag-api
+   def plag(doc):
+      pass
+
+   #Creating Rubiric
+   '''
+   Plag below 30%: 
+      All components contain 5 marks each and thus making the total marks 35, if any of 
+      the component is missing 5 marks would be deducted directly.
+   Plag between 30-50%:
+      The marks would be calculated according to the above rule itself but 10 marks would 
+      deducted directly due to presence of plagirism.
+   Plag between 50-70%:
+      The marks would be calculated according to the above rule itself but 20 marks would 
+      deducted directly due to presence of plagirism.
+   Plag between 70-100%
+      The marks would be calculated according to the above rule itself but 30 marks would 
+      deducted directly due to presence of plagirism.   
+   '''
+   #Sending the percentage to the rubiric
+   def feedback(model, rubiric, text):
+      pass
+   
+   def similarity(model, text1, text2):
+      '''
+      if two feedback returns same marks along with same amount of plagirism, then these
+      two text would be assesed by similarity function, where-in the original texts of 
+      both the students would be compared and cosine-similarity would be calculated.
+      Given a threshold: if the similarity is more, then 10 marks would be deducted from
+      each of the student, else the function would pass and no operation would be performed.
+      '''
+      pass
+
+   f = open("static/working/assignment.txt", "a")
+   res = response['block']
+   f.write(res)
+   f.close()
+   return render_template('result.html', res = res)
 
 if __name__ == '__main__':
    app.run(debug = True)
