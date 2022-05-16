@@ -1,14 +1,9 @@
-from distutils.command.upload import upload
 import os
-import io
-from xml.dom.minidom import Document
 import boto3
 import logging
-from PIL import Image, ImageDraw
 from botocore.exceptions import ClientError
-from flask import Flask, render_template, request, send_from_directory
-from werkzeug.utils import secure_filename
-
+from flask import Flask, render_template, request
+from src.ocr import ocr as ocr
 
 app = Flask(__name__)
 
@@ -31,10 +26,6 @@ def result():
    f_name = reg+ '-' +name + '.' + file_extension
    f_path = 'static/working/' + f_name
    f.save(f_path)
-
-   #Uploading the file to S3 bucket
-   AWS_ACCESS_KEY_ID = ''
-   AWS_SECRET_ACCESS_KEY = ''
 
    def upload_file(file_name, bucket, object_name=None):
     """Upload a file to an S3 bucket
@@ -61,16 +52,23 @@ def result():
    upload_file(f_path, bucket='assesmentevaluation')
 
    #OCR detection on the document
-   client = boto3.client('textract', 'ap-south-1')
-   response = client.detect_document_text(
-      Document={
-         'Bytes': b'bytes',
-         'S3Object': {
-               'Bucket': 'assesmentevaluation',
-               'Name': f_name
-         }
-      }
-   )
+   def ocr_detect(bucket, img, region):
+      resp = ocr.process_text_detection(bucket, img, region)
+      text = ''
+      resp = dict(resp)
+      for i in range(len(resp['Blocks'])):
+         if resp['Blocks'][i]['BlockType'] == 'LINE':
+            str1= resp['Blocks'][i]['Text']
+            text = text + str1
+         else:
+            continue
+      return text
+
+   response = ocr_detect('assesmentevaluation', f_name, 'ap-south-1')
+   textfile = '/static/working/' + reg+ '-' +name + '-text.txt'
+   f = open(textfile, 'a')
+   f.write(response)
+   f.close()
 
    #Sending the text to plag-api
    def plag(doc):
@@ -105,11 +103,11 @@ def result():
       '''
       pass
 
-   f = open("static/working/assignment.txt", "a")
-   res = response['block']
-   f.write(res)
-   f.close()
-   return render_template('result.html', res = res)
+   # f = open("static/working/assignment.txt", "a")
+   # res = response['block']
+   # f.write(res)
+   # f.close()
+   return render_template('result.html', res = response)
 
 if __name__ == '__main__':
    app.run(debug = True)
