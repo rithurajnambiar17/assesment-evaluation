@@ -4,12 +4,16 @@
             Assesment Evaluation
         </title>
         <link rel="stylesheet" href="../static/css/index.css">
+        <script src="https://cdn.jsdelivr.net/npm/optiic@latest/dist/index.min.js"></script>
     </head>
 
     <body>
         <form action="submit" method="GET">
             <div class="container">
                 <h1 class="success">SUBMISSION SUCCESSFUL!</h1>
+                <!-- For showing the image -->
+                <!-- <img src = {{url_for('static', filename=file)}}> -->
+                <p>{{result}}</p>
             </div>
         </form>
     </body>
