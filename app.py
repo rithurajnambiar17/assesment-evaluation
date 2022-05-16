@@ -33,8 +33,8 @@ def result():
    f.save(f_path)
 
    #Uploading the file to S3 bucket
-   AWS_ACCESS_KEY_ID = 'AKIAURFKFMOLCWRFG6VW'
-   AWS_SECRET_ACCESS_KEY = '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'
+   AWS_ACCESS_KEY_ID = ''
+   AWS_SECRET_ACCESS_KEY = ''
 
    def upload_file(file_name, bucket, object_name=None):
     """Upload a file to an S3 bucket
@@ -66,7 +66,8 @@ def result():
          'Bytes': b'bytes',
          'S3Object': {
                'Bucket': 'assesmentevaluation',
-               'Name': f_name
+               'Name': f_name,
+               'Region' : 'ap-south-1'
          }
       }
    )
