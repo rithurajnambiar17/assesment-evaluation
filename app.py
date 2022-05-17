@@ -66,7 +66,7 @@ def result():
       return text
 
    response = ocr_detect('assesmentevaluation', f_name, 'ap-south-1')
-   textfile = 'static/working/' + reg+ '-' +name + '-text.txt'
+   textfile = reg+ '-' +name + '-text.txt'
    # f = open(textfile, 'x')
    f = open(textfile, 'a')
    f.write(response)
@@ -76,7 +76,7 @@ def result():
    def plag(doc):
       return pl(doc)
 
-   plag = plag(reg+ '-' +name + '-text.txt')
+   plag = plag(textfile)
 
    #Creating Rubiric
    '''
