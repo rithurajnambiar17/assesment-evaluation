@@ -1,4 +1,5 @@
 import os
+from pydoc import plainpager
 import boto3
 import logging
 from botocore.exceptions import ClientError
@@ -89,6 +90,17 @@ def result():
       The marks would be calculated according to the above rule itself but 30 marks would 
       deducted directly due to presence of plagirism.   
    '''
+   def rubiric(plag_percent, assets):
+      if plag_percent <= 30:
+         marks = len(assets) * 5
+      elif plag_percent > 30 & plag_percent <= 50:
+         marks = (len(assets) * 5) - 10
+      elif plag_percent > 50 & plag_percent <= 70:
+         marks = (len(assets) * 5) - 20
+      elif plag_percent > 70 & plag_percent <=100:
+         marks = (len(assets) * 5) - 30
+      return marks
+         
    #Sending the percentage to the rubiric
    def feedback(model, rubiric, text):
       pass
@@ -103,10 +115,6 @@ def result():
       '''
       pass
 
-   # f = open("static/working/assignment.txt", "a")
-   # res = response['block']
-   # f.write(res)
-   # f.close()
    return render_template('result.html')
 
 if __name__ == '__main__':
