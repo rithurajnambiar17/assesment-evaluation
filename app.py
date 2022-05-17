@@ -1,10 +1,10 @@
 import os
-from pydoc import plainpager
 import boto3
 import logging
 from botocore.exceptions import ClientError
 from flask import Flask, render_template, request
 from src.ocr import ocr as ocr
+from src.plag import plag as pl
 
 app = Flask(__name__)
 
@@ -66,14 +66,17 @@ def result():
       return text
 
    response = ocr_detect('assesmentevaluation', f_name, 'ap-south-1')
-   textfile = '/static/working/' + reg+ '-' +name + '-text.txt'
+   textfile = 'static/working/' + reg+ '-' +name + '-text.txt'
+   # f = open(textfile, 'x')
    f = open(textfile, 'a')
    f.write(response)
    f.close()
 
    #Sending the text to plag-api
    def plag(doc):
-      pass
+      return pl(doc)
+
+   plag = plag(reg+ '-' +name + '-text.txt')
 
    #Creating Rubiric
    '''
@@ -115,7 +118,19 @@ def result():
       '''
       pass
 
-   return render_template('result.html')
+   return render_template('result.html', status=plag)
+
+@app.route('/webhook/completed')
+def completed():
+   return render_template('completed.html')
+
+@app.route('/webhook/error')
+def error():
+   return render_template('error.html')
+
+@app.route('/webhook/creditsChecked')
+def creditsChecked():
+   return render_template('credits.html')
 
 if __name__ == '__main__':
    app.run(debug = True)
